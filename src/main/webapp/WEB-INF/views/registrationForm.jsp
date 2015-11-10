@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,7 +13,7 @@
     권한 : <input type="text" name="role" value="ROLE_ADMIN"/><br/>
     닉네임 : <input type="text" name="nick" /><br/>
     <input type="submit" value="확인"/>
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <sec:csrfInput/>
 </form>
 </body>
 </html>
