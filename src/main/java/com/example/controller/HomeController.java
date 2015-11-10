@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/")
     public String index() {
@@ -45,6 +48,7 @@ public class HomeController {
     @RequestMapping("/register")
     public String register(Account account) {
         // DB저장
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
         accountRepository.save(account);
 
         // SecurityContextHolder에서 받아서 Context 받아 인증 설정
