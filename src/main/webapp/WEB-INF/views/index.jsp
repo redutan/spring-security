@@ -14,7 +14,7 @@
     <br/>로그인상태<br/>
 </sec:authorize>
 
-index.jsp
+index<br/>
 <a href="/admin">어드민</a><br/>
 <a href="/user">사용자</a><br/>
 <a href="/registrationForm">회원가입</a><br/>

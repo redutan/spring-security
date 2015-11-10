@@ -9,9 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
-
-import javax.sql.DataSource;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 /**
  * @author redutan
@@ -20,6 +18,7 @@ import javax.sql.DataSource;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String REMEMBER_ME_KEY = "redutanKey";
     @Autowired
     UserDetailsService userDetailsService;
 
@@ -37,14 +36,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").hasRole("USER")
                 .antMatchers("/**").permitAll();
         // for h2
-        http.headers()
-                .addHeaderWriter(new StaticHeadersWriter("X-Content-Security-Policy","script-src 'self'"));
+//        http.authorizeRequests().antMatchers("/").permitAll().and()
+//                .authorizeRequests().antMatchers("/h2/**").permitAll();
+//
+//        http.csrf().disable();
+//        http.headers().frameOptions().disable();
+
         http.formLogin()
                 .loginPage("/login").permitAll();
+        http.rememberMe().key(REMEMBER_ME_KEY).rememberMeServices(tokenBasedRememberMeServices());
+    }
+
+    @Bean
+    public TokenBasedRememberMeServices tokenBasedRememberMeServices() {
+        TokenBasedRememberMeServices tokenBasedRememberMeServices =
+                new TokenBasedRememberMeServices(REMEMBER_ME_KEY, userDetailsService);
+        tokenBasedRememberMeServices.setCookieName("redutanToken");
+        return tokenBasedRememberMeServices;
     }
 
     // h2 web console
-    @Bean
+//    @Bean
     public ServletRegistrationBean h2servletRegistration() {
         ServletRegistrationBean registration = new ServletRegistrationBean(new WebServlet());
         registration.addUrlMappings("/h2/*");

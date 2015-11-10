@@ -7,6 +7,7 @@
 </head>
 <body>
 <h1>로그인 페이지</h1>
+<a href="/">인덱스로 이동</a><br/>
 <c:url value="/login" var="loignUrl"/>
 <form action="${loginUrl}" method="post">
     <c:if test="${param.error != null}">
@@ -26,6 +27,9 @@
     <p>
         <label form="password">Password</label>
         <input type="password" id="password" name="password"/>
+    </p>
+    <p>
+        Remember Me : <input type="checkbox" name="_spring_security_remember_me" checked="checked"/>
     </p>
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     <button type="submit" class="btn">Login in</button>
