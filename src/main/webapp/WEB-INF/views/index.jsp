@@ -17,6 +17,7 @@
 index.jsp
 <a href="/admin">어드민</a><br/>
 <a href="/user">사용자</a><br/>
+<a href="/registrationForm">회원가입</a><br/>
 
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post">
