@@ -9,7 +9,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+
+import javax.sql.DataSource;
 
 /**
  * @author redutan
@@ -21,6 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String REMEMBER_ME_KEY = "redutanKey";
     @Autowired
     UserDetailsService userDetailsService;
+
+    @Autowired
+    DataSource dataSource;
 
     @Autowired
     public void configuGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -44,15 +51,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
                 .loginPage("/login").permitAll();
-        http.rememberMe().key(REMEMBER_ME_KEY).rememberMeServices(tokenBasedRememberMeServices());
+        // token based
+//        http.rememberMe().key(REMEMBER_ME_KEY).rememberMeServices(tokenBasedRememberMeServices());
+        // perstent based
+        http.rememberMe().key(REMEMBER_ME_KEY).rememberMeServices(persistentTokenBasedRememberMeServices());
     }
 
+    // Token
     @Bean
     public TokenBasedRememberMeServices tokenBasedRememberMeServices() {
         TokenBasedRememberMeServices tokenBasedRememberMeServices =
                 new TokenBasedRememberMeServices(REMEMBER_ME_KEY, userDetailsService);
         tokenBasedRememberMeServices.setCookieName("redutanToken");
         return tokenBasedRememberMeServices;
+    }
+
+    // Persistentsaf
+    @Bean
+    public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
+        return new PersistentTokenBasedRememberMeServices(REMEMBER_ME_KEY, userDetailsService, jdbcTokenRepository());
+    }
+
+    @Bean
+    public JdbcTokenRepositoryImpl jdbcTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setCreateTableOnStartup(false);
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
     }
 
     // h2 web console
