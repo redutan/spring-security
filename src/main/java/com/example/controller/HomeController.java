@@ -74,4 +74,8 @@ public class HomeController {
     public String userMessage(Account account) {
         return "당신은 한낱 유저입니다 ㅠ";
     }
+
+    @RequestMapping("/403")
+    public void accessDeniedPage() {
+    }
 }

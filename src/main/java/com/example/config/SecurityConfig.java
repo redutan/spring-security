@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.rememberMe().key(REMEMBER_ME_KEY).rememberMeServices(tokenBasedRememberMeServices());
         // perstent based
         http.rememberMe().key(REMEMBER_ME_KEY).rememberMeServices(persistentTokenBasedRememberMeServices());
-        //http.exceptionHandling().accessDeniedPage("/403");
+        http.exceptionHandling().accessDeniedPage("/403");
     }
 
     // Token
