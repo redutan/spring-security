@@ -4,6 +4,7 @@ import com.example.domain.Account;
 import com.example.repository.AccountRepository;
 import com.example.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author redutan
@@ -59,4 +61,17 @@ public class HomeController {
         return "redirect:/";
     }
 
+    @RequestMapping("/getPrivateMessage")
+    @ResponseBody
+    @PreAuthorize("#account.username == principal.username or hasRole('ROLE_ADMIN')")
+    public String authString(Account account) {
+        return "당신은 관리자이거나, 요청 파라미터와 아이디가 같습니다.";
+    }
+
+    @RequestMapping("/getUserMessage")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String userMessage(Account account) {
+        return "당신은 한낱 유저입니다 ㅠ";
+    }
 }
