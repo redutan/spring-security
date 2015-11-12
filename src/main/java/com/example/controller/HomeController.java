@@ -63,14 +63,14 @@ public class HomeController {
 
     @RequestMapping("/getPrivateMessage")
     @ResponseBody
-    @PreAuthorize("#account.username == principal.username or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("#account.username == principal.username or hasRole('ADMIN')")
     public String authString(Account account) {
         return "당신은 관리자이거나, 요청 파라미터와 아이디가 같습니다.";
     }
 
     @RequestMapping("/getUserMessage")
     @ResponseBody
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     public String userMessage(Account account) {
         return "당신은 한낱 유저입니다 ㅠ";
     }
