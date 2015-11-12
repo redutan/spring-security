@@ -16,4 +16,10 @@ public class HelloMessageService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return "Hello " + authentication;
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public String getAdminMessage() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return "Hello Admin " + authentication.getName();
+    }
 }

@@ -1,18 +1,16 @@
 package com.example.service;
 
 import com.example.SpringSecurityApplication;
-import com.example.config.SecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -29,7 +27,7 @@ import static org.junit.Assert.*;
 public class HelloMessageServiceTest {
 
     @Autowired
-    HelloMessageService helloMessageService;
+    HelloMessageService messageService;
 
     @Before
     public void setUp() throws Exception {
@@ -38,15 +36,30 @@ public class HelloMessageServiceTest {
 
     @Test(expected = AuthenticationCredentialsNotFoundException.class)
     public void testGetMessage_InvalidAuth() throws Exception {
-        helloMessageService.getMessage();
+        messageService.getMessage();
         fail("AuthenticationCredentialsNotFoundException 무조건 발생해야함");
     }
 
     @Test
     @WithMockUser
     public void testGetMessage() throws Exception {
-        String message = helloMessageService.getMessage();
-        log.debug("message = {}", message);
+        String message = messageService.getMessage();
+        log.info("message = {}", message);
         assertThat(message, is(notNullValue()));
+    }
+
+    @WithMockUser(username = "user", password = "1234", roles = "USER")
+    @Test(expected = AccessDeniedException.class)
+    public void testGetAdminMessage_InvalidAuth() throws Exception {
+        messageService.getAdminMessage();
+        fail("AccessDeniedException 무조건 발생해야함");
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "1234", roles = "ADMIN")
+    public void testGetAdminMessage() throws Exception {
+        String adminMessage = messageService.getAdminMessage();
+        log.info("adminMessage = {}", adminMessage);
+        assertThat(adminMessage, is(notNullValue()));
     }
 }
